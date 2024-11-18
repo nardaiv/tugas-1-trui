@@ -3,6 +3,8 @@
 
 
 #define ELSA_BASE_HP 200
+#define MAX_TURNS 5
+#define MAX_HP 100
 
 struct loopReport
 {
@@ -27,6 +29,12 @@ void battle(float *currentLearningPoints, int *userHP){
 
 }
 
+int calculateLearningPoint(int damageDealt,int turnSurvived,int damageSurvived ){
+    int damageScore = damageDealt * 100 / ELSA_BASE_HP;
+    int surivalScore = turnSurvived * 100 / MAX_TURNS ;
+    int healtScore = (1 - (damageSurvived / (MAX_HP * turnSurvived)))*100;
+    return 0.4*damageScore + 0.3*surivalScore + 0.3*healtScore;
+}
 
 void deathLoop(int *deathCount, float *currentLearningPoints, bool *winningState){
     
