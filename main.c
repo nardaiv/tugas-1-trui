@@ -8,7 +8,7 @@
 
 struct loopReport
 {
-    int damageReceive;
+    int damageSurvived;
     int damageDealt;
     int turnCount;
     char *deathCause;
@@ -16,16 +16,22 @@ struct loopReport
 };
 
 
-void battle(float *currentLearningPoints, int *userHP){
-    int hpMultiplier = 2.0f - (*currentLearningPoints / 100.0f);
-    int elsaHP = (int)(ELSA_BASE_HP * hpMultiplier);;
+void battle(
+    float *currentLearningPoints, int *damageDealt, int *damageSurvived, bool *reset, bool *winningState, int turnCount,
+
+    //User
+    int *userHP, float *attackMultiplier,
+    
+    //Elsa
+    int *elsaHP, float *hpMultiplier
+){
     
     char choice;
 
-    printf("Subaru HP: %d | Elsa HP: %d", *userHP, elsaHP);
+    printf("\nSubaru HP: %d | Elsa HP: %d\n", *userHP, *elsaHP);
     printf("Pilih aksi:\nA: Serang\nD: Menghindar\nR: Kabur (Reset ke checkpoint)\n");
     printf("Pilihan: ");
-    scanf("%c \n", &choice);
+    scanf("%c", &choice);
 
 }
 
@@ -33,19 +39,37 @@ int calculateLearningPoint(int damageDealt,int turnSurvived,int damageSurvived )
     int damageScore = damageDealt * 100 / ELSA_BASE_HP;
     int surivalScore = turnSurvived * 100 / MAX_TURNS ;
     int healtScore = (1 - (damageSurvived / (MAX_HP * turnSurvived)))*100;
+    
     return 0.4*damageScore + 0.3*surivalScore + 0.3*healtScore;
 }
 
 void deathLoop(int *deathCount, float *currentLearningPoints, bool *winningState){
-    
+
+    int turnCount,damageDealt, damageSurvived = 0;
+    bool reset = false;    
+
+    // UserProperty
     int userHP = 100;
-    int turnCount = 0;
-    bool reset = false;
+    float attackMultiplier = 0.5f + (*currentLearningPoints / 100.0f);
 
-    printf("[Death Loop #%d]", *deathCount);
+    // Elsa Property
+    float damageMultiplier = damageMultiplier = 1.5f - (*currentLearningPoints / 200.0f);
+    float hpMultiplier = 2.0f - (*currentLearningPoints / 100.0f);
+    int elsaHP = (int)(ELSA_BASE_HP * hpMultiplier);;
 
-    while(userHP > 0 || !winningState ){
-        battle(currentLearningPoints, &userHP);
+    printf("[Death Loop #%d]\n", *deathCount);
+    printf("Elsa's HP Multiplier: %0.2fx (Learning Points: %d)\n", hpMultiplier, *currentLearningPoints);
+
+    while(userHP > 0 && !reset ){
+        battle(
+            currentLearningPoints, &damageDealt, &damageSurvived, &reset, &winningState, &turnCount,
+            
+            //User 
+            &userHP, &damageMultiplier,  
+            
+            //Elsa
+            &elsaHP, &hpMultiplier
+        );
         turnCount++;
     }
 
@@ -65,7 +89,7 @@ int main() {
 
 
   int deathCount = 1;
-  while(deathCount<=10 || !winningState){
+  while(deathCount<=10 && !winningState){
     deathLoop(&deathCount, &currentLearningPoints, &winningState);
     deathCount++;
   }
