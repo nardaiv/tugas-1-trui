@@ -73,7 +73,11 @@ void deathLoop(int *deathCount, float *currentLearningPoints, bool *winningState
         turnCount++;
     }
 
-
+    // calculate learning point received from last battle
+    int learningPoint = calculateLearningPoint(damageDealt, turnCount, damageSurvived);
+    
+    // add learning point received from last battle
+    *currentLearningPoints += learningPoint;
 
 }
 
@@ -84,6 +88,7 @@ void analysis(){
 int main() {
   float currentLearningPoints = 10;
   bool winningState = false;
+
   printf("=== Return by Death Battle Simulator ===\n");
   printf("Subaru vs Elsa Granhiert\n\n");
 
