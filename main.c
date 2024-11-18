@@ -15,6 +15,18 @@ struct loopReport
     int learningPoints;
 };
 
+void attack(){
+
+}
+
+void dodge(){
+
+}
+
+void retreat(){
+
+}
+
 
 void battle(
     float *currentLearningPoints, int *damageDealt, int *damageSurvived, bool *reset, bool *winningState, int turnCount,
@@ -32,6 +44,21 @@ void battle(
     printf("Pilih aksi:\nA: Serang\nD: Menghindar\nR: Kabur (Reset ke checkpoint)\n");
     printf("Pilihan: ");
     scanf("%c", &choice);
+
+    if(choice == "A"){
+        attack();
+
+    }else if(choice =="D"){
+        dodge();
+
+    }else if(choice=="R"){
+        retreat();
+
+    }else{
+        //error handling
+        printf("\nERROR : INVALID INPUT");
+        exit(1);
+    }
 
 }
 
@@ -91,7 +118,6 @@ int main() {
 
   printf("=== Return by Death Battle Simulator ===\n");
   printf("Subaru vs Elsa Granhiert\n\n");
-
 
   int deathCount = 1;
   while(deathCount<=10 && !winningState){
