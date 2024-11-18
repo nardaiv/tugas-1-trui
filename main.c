@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-
 #define ELSA_BASE_HP 200
 #define MAX_TURNS 5
 #define MAX_HP 100
@@ -15,7 +14,19 @@ struct loopReport
     int learningPoints;
 };
 
-void attack(){
+void attack(int *userHP, float attackMultiplier, int *elsaHp, int *damageDealt, int *damageSurvived){
+    //get attack input from user
+    int attackPower;
+    printf("\nMasukkan kekuatan serangan (0-100): ");
+    scanf("%d", &attackPower);
+    
+    int actualDamage = (int)(attackPower * attackMultiplier);
+
+    printf("\nSubaru menyerang! Base: %d, Actual: %d (x%0.2f)\n", attackPower, actualDamage, attackMultiplier);
+    *elsaHp -= actualDamage;
+
+    printf("Elsa menyerang! Damage: 28 (x1.14 multiplier)\n");
+
 
 }
 
@@ -35,7 +46,7 @@ void battle(
     int *userHP, float *attackMultiplier,
     
     //Elsa
-    int *elsaHP, float *hpMultiplier
+    int *elsaHP, float *damageMultiplier
 ){
     
     char choice;
@@ -46,7 +57,7 @@ void battle(
     scanf("%c", &choice);
 
     if(choice == "A"){
-        attack();
+        attack(userHP, *attackMultiplier, elsaHP, damageDealt, damageDealt);
 
     }else if(choice =="D"){
         dodge();
@@ -92,10 +103,10 @@ void deathLoop(int *deathCount, float *currentLearningPoints, bool *winningState
             currentLearningPoints, &damageDealt, &damageSurvived, &reset, &winningState, &turnCount,
             
             //User 
-            &userHP, &damageMultiplier,  
+            &userHP,&attackMultiplier,  
             
             //Elsa
-            &elsaHP, &hpMultiplier
+            &elsaHP,  &damageMultiplier
         );
         turnCount++;
     }
