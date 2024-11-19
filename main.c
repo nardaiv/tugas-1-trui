@@ -17,7 +17,7 @@ struct loopReport
     int learningPoints;
 };
 
-void attack(int *userHP, float attackMultiplier, int *elsaHp, float damageMultiplier, int *damageDealt, int *damageSurvived, int turnCount){
+void attack(int *userHP, float attackMultiplier, int *elsaHp, float damageMultiplier, int *damageDealt, int *damageSurvived, bool *winningState, bool *reset, int turnCount){
     //get attack input from user
     int attackPower;
     printf("Masukkan kekuatan serangan (0-100): ");
@@ -34,6 +34,11 @@ void attack(int *userHP, float attackMultiplier, int *elsaHp, float damageMultip
     printf("Elsa menyerang! Damage: %d (x%0.2f multiplier)\n", elsaDamage, damageMultiplier);
     *userHP -= elsaDamage;
     *damageSurvived += elsaDamage;
+
+    if (elsaHp <=0 ){
+        *winningState = true;
+        *reset = true;
+    }
 
 }
 
@@ -64,7 +69,7 @@ void battle(
     scanf(" %c", &choice);
 
     if( choice == 'A'){
-        attack(userHP, attackMultiplier, elsaHP, damageMultiplier, damageDealt, damageSurvived, turnCount);
+        attack(userHP, attackMultiplier, elsaHP, damageMultiplier, damageDealt, damageSurvived, winningState, reset, turnCount);
 
     }else if(choice =='D'){
         dodge();
@@ -83,7 +88,7 @@ void battle(
 int calculateLearningPoint(int damageDealt,int turnSurvived,int damageSurvived ){
     float damageScore = damageDealt * 100 / ELSA_BASE_HP;
     float surivalScore = turnSurvived * 100 / MAX_TURNS ;
-    float healtScore = (1 - (damageSurvived / (MAX_HP * turnSurvived)))*100;
+    float healtScore = (1.0f - ((float)damageSurvived / (MAX_HP * turnSurvived))) * 100;
     printf("%f %f %f \n",damageScore, surivalScore, healtScore);
     
     return (int)(0.4*damageScore + 0.3*surivalScore + 0.3*healtScore);;
