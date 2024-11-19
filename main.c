@@ -5,7 +5,7 @@
 
 #define ELSA_BASE_HP 200
 #define BASE_ELSA_DAMAGE 20
-#define MAX_TURNS 5
+#define MAX_TURNS 10
 #define MAX_HP 100
 
 struct loopReport
