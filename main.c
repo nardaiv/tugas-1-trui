@@ -8,12 +8,11 @@
 #define MAX_TURNS 10
 #define MAX_HP 100
 
-struct loopReport
+struct LoopReport 
 {
     int damageSurvived;
     int damageDealt;
     int turnCount;
-    char *deathCause;
     int learningPoints;
 };
 
@@ -89,12 +88,12 @@ int calculateLearningPoint(int damageDealt,int turnSurvived,int damageSurvived )
     float damageScore = damageDealt * 100 / ELSA_BASE_HP;
     float surivalScore = turnSurvived * 100 / MAX_TURNS ;
     float healtScore = (1.0f - ((float)damageSurvived / (MAX_HP * turnSurvived))) * 100;
-    printf("%f %f %f \n",damageScore, surivalScore, healtScore);
+    //printf("%f %f %f \n",damageScore, surivalScore, healtScore);
     
     return (int)(0.4*damageScore + 0.3*surivalScore + 0.3*healtScore);;
 }
 
-void deathLoop(int *deathCount, float *currentLearningPoints, bool *winningState){
+void deathLoop(int *deathCount, float *currentLearningPoints, bool *winningState, struct LoopReport *reports, int *reportCounter){
 
     int turnCount =0 ,damageDealt = 0 , damageSurvived = 0;
     bool reset = false;    
@@ -124,13 +123,17 @@ void deathLoop(int *deathCount, float *currentLearningPoints, bool *winningState
         turnCount++;
     }
 
-    printf("%d %d %d \n",damageDealt, turnCount, damageSurvived);
+    //printf("%d %d %d \n",damageDealt, turnCount, damageSurvived);
     // calculate learning point received from last battle
     int learningPoint = calculateLearningPoint(damageDealt, turnCount, damageSurvived);
     
     // add learning point received from last battle
     *currentLearningPoints = learningPoint;
 
+    struct LoopReport newReport = {damageSurvived, damageDealt, turnCount, learningPoint};
+    reports[*reportCounter] = newReport;
+    printf("%d %d %d %d", newReport.damageSurvived, newReport.damageDealt, newReport.turnCount, newReport.learningPoints);
+    *reportCounter++;
 }
 
 void analysis(){
@@ -140,13 +143,15 @@ void analysis(){
 int main() {
   float currentLearningPoints = 10;
   bool winningState = false;
+  struct LoopReport reports[10];
+  int reportCounter = 0;
 
   printf("=== Return by Death Battle Simulator ===\n");
   printf("Subaru vs Elsa Granhiert\n");
 
   int deathCount = 1;
   while(deathCount<=10 && !winningState){
-    deathLoop(&deathCount, &currentLearningPoints, &winningState);
+    deathLoop(&deathCount, &currentLearningPoints, &winningState, reports, &reportCounter);
     deathCount++;
   }
 
