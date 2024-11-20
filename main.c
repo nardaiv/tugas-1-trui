@@ -45,8 +45,10 @@ void dodge(){
 
 }
 
-void retreat(){
-
+void retreat(bool *reset){
+    printf("Subaru Kabur dari pertempuran\n");
+    printf("Subaru tidak menerima attack sama sekali\n");
+    *reset = true;
 }
 
 
@@ -74,7 +76,7 @@ void battle(
         dodge();
 
     }else if(choice=='R'){
-        retreat();
+        retreat(reset);
 
     }else{
         //error handling
