@@ -34,7 +34,7 @@ void attack(int *userHP, float attackMultiplier, int *elsaHp, float damageMultip
     *userHP -= elsaDamage;
     *damageSurvived += elsaDamage;
 
-    if (*elsaHp < 0 ){
+    if (*elsaHp <= 0 ){
         *winningState = true;
         *reset = true;
     }
@@ -199,28 +199,28 @@ void analysis(struct LoopReport *reports, int reportCounter){
 }
 
 int main() {
-  float currentLearningPoints = 10;
-  bool winningState = false;
-  struct LoopReport reports[10];
-  int reportCounter = 0;
+    float currentLearningPoints = 10;
+    bool winningState = false;
+    struct LoopReport reports[10];
+    int reportCounter = 0;
 
-  printf("=== Return by Death Battle Simulator ===\n");
-  printf("Subaru vs Elsa Granhiert\n");
+    printf("=== Return by Death Battle Simulator ===\n");
+    printf("Subaru vs Elsa Granhiert\n");
 
-  int deathCount = 1;
-  while(deathCount<=10 && !winningState){
+    int deathCount = 1;
+    while(deathCount<=10 && !winningState){
     deathLoop(&deathCount, &currentLearningPoints, &winningState, reports, &reportCounter);
     deathCount++;
-  }
+    }
 
-  if(winningState){
+    if(winningState){
     printf("\nSUBARU BERHASIL MENGALAHKAN ELSA!\n");
-  }else{
+    }else{
     printf("\nSUBARU TIDAK BERHASIL MENGALAHKAN ELSA!\n");
-  }
+    }
 
-    
-  analysis(reports, reportCounter);
 
-  return 0;
+    analysis(reports, reportCounter);
+
+    return 0;
 }
