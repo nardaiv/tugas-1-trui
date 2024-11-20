@@ -159,6 +159,17 @@ char* learningPointsCategory(float learningPoint){
     }
 }
 
+void deathData(int index,struct LoopReport report){
+    printf("\nLoop #%d:\n", index+1);
+    printf("Damage ke Elsa: %d \n", report.damageDealt);
+    printf("Damage Diterima: %d \n", report.damageSurvived);
+    printf("Bertahan selama: %d turn\n", report.turnCount);
+    printf("Penyebab Kematian: Sayatan Normal\n");
+    printf("Learning Points: %d\n", report.learningPoints);
+
+
+}
+
 void analysis(struct LoopReport *reports, int reportCounter){
     printf("\n=== Analisis Return by Death ===\n"); 
 
@@ -168,7 +179,7 @@ void analysis(struct LoopReport *reports, int reportCounter){
     printf("\nPemahaman Subaru tentang Elsa: %s\n", learningPointsCategory(averageLearningPoints));
     printf("Detail Setiap Loop:\n");
     for(int i = 0; i < reportCounter; i++){
-
+        deathData(i, reports[i]);
     }
 
 }
