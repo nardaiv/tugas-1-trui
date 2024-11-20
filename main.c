@@ -34,7 +34,7 @@ void attack(int *userHP, float attackMultiplier, int *elsaHp, float damageMultip
     *userHP -= elsaDamage;
     *damageSurvived += elsaDamage;
 
-    if (elsaHp <=0 ){
+    if (*elsaHp < 0 ){
         *winningState = true;
         *reset = true;
     }
@@ -130,20 +130,46 @@ void deathLoop(int *deathCount, float *currentLearningPoints, bool *winningState
     // add learning point received from last battle
     *currentLearningPoints = learningPoint;
 
-    struct LoopReport newReport = {damageSurvived, damageDealt, turnCount, learningPoint};
+    struct LoopReport newReport = {damageSurvived, damageDealt, turnCount, (int)learningPoint};
     reports[*reportCounter] = newReport;
-    printf("%d %d %d %d", newReport.damageSurvived, newReport.damageDealt, newReport.turnCount, newReport.learningPoints);
-    *reportCounter++;
+    //printf("%d %d %d %d", newReport.damageSurvived, newReport.damageDealt, newReport.turnCount, newReport.learningPoints);
+    *reportCounter+= 1;
 }
 
-void analysis(struct LoopReport *repots, int reportCounter){
+float average(struct LoopReport reports[], int choice, int lenght){
+    int sum = 0 ;
+    for( int i= 0; i < lenght; i++){
+        int num = (choice == 1) ? reports[i].learningPoints : reports[i].damageSurvived;
+        sum += num;
+    }
+    return (float) sum / lenght;
+}
+
+char* learningPointsCategory(float learningPoint){
+    if (learningPoint >= 85){
+        return "SEMPURNA (Memahami semua pola serangan)";
+    }else if(learningPoint >= 70){
+        return "TINGGI (Memahami sebagian besar pola)";
+    }else if(learningPoint >= 55){
+        return "SEDANG (Mulai memahami pola dasar)";
+    }else if(learningPoint >= 40){
+        return "RENDAH (Masih banyak yang belum dipahami)";
+    }else {
+        return "MINIMAL (Belum memahami pola)";
+    }
+}
+
+void analysis(struct LoopReport *reports, int reportCounter){
     printf("\n=== Analisis Return by Death ===\n"); 
 
     printf("Total Loop Kematian: %d\n", reportCounter);
-    
-    printf("Rata-rata Learning Points: 70.33\n");
-    printf("\nPemahaman Subaru tentang Elsa: TINGGI (Memahami sebagian besar pola)\n");
+    float averageLearningPoints = average(reports, 1, reportCounter);
+    printf("Rata-rata Learning Points: %0.2f\n", averageLearningPoints);
+    printf("\nPemahaman Subaru tentang Elsa: %s\n", learningPointsCategory(averageLearningPoints));
     printf("Detail Setiap Loop:\n");
+    for(int i = 0; i < reportCounter; i++){
+
+    }
 
 }
 
@@ -168,6 +194,7 @@ int main() {
     printf("\nSUBARU TIDAK BERHASIL MENGALAHKAN ELSA!\n");
   }
 
+    
   analysis(reports, reportCounter);
 
   return 0;
