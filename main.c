@@ -8,6 +8,7 @@
 #define MAX_TURNS 10
 #define MAX_HP 100
 
+// struct for report data from each battle
 struct LoopReport 
 {
     int damageSurvived;
@@ -34,6 +35,7 @@ void attack(int *userHP, float attackMultiplier, int *elsaHp, float damageMultip
     *userHP -= elsaDamage;
     *damageSurvived += elsaDamage;
 
+    // when elseHP less than or equal to 0, change game status to win and stop loop by using reset 
     if (*elsaHp <= 0 ){
         *winningState = true;
         *reset = true;
@@ -46,7 +48,7 @@ void dodge(int *userHP, float currentLearningPoints, int *elsaHp, float damageMu
     int elsaDamage = (int)((BASE_ELSA_DAMAGE + (turnCount * 5)) * damageMultiplier);
     printf("Elsa menyerang! Damage: %d (x%0.2f multiplier)\n", elsaDamage, damageMultiplier);
 
-    // user dodge
+    // user dodges
     int dodge = elsaDamage * 0.5 + abs(currentLearningPoints - elsaDamage)*0.4;
     printf("Subaru berhasil menghindari serangan! Pengurangan Damage : %d \n", dodge);
 
@@ -77,6 +79,7 @@ void battle(
 
     printf("\nSubaru HP: %d | Elsa HP: %d\n", *userHP, *elsaHP);
     printf("Pilih aksi:\nA: Serang\nD: Menghindar\nR: Kabur (Reset ke checkpoint)\n");
+    // Ask user's action in the battle
     printf("Pilihan: ");
     scanf(" %c", &choice);
 
@@ -92,6 +95,7 @@ void battle(
     }else{
         //error handling
         printf("\nInput tidak Valid! Harap coba lagi!\n");
+        //callback itself (recursive) to ask the right input 
         battle(
             currentLearningPoints, damageDealt, damageSurvived, reset, winningState, turnCount,
             
@@ -149,6 +153,7 @@ void deathLoop(int *deathCount, float *currentLearningPoints, bool *winningState
     // add learning point received from last battle
     *currentLearningPoints = learningPoint;
 
+    // add the data from battle to reports struct array 
     struct LoopReport newReport = {damageSurvived, damageDealt, turnCount, (int)learningPoint};
     reports[*reportCounter] = newReport;
     *reportCounter+= 1;
@@ -156,6 +161,7 @@ void deathLoop(int *deathCount, float *currentLearningPoints, bool *winningState
 
 float average(struct LoopReport reports[], int choice, int lenght){
     int sum = 0 ;
+    // add all learning points from every battle
     for( int i= 0; i < lenght; i++){
         int num = (choice == 1) ? reports[i].learningPoints : reports[i].damageSurvived;
         sum += num;
@@ -197,6 +203,7 @@ void deathData(int index,struct LoopReport report){
     printf("Damage Diterima: %d \n", report.damageSurvived);
     printf("Bertahan selama: %d turn\n", report.turnCount);
 
+    //determine what death's cause category based on damage taken per number of turn in battle 
     float attackAvg = (float)report.damageSurvived / report.turnCount;
     printf("Penyebab Kematian: Sayatan %s\n", attackCategory(attackAvg) );
     
@@ -213,6 +220,7 @@ void analysis(struct LoopReport *reports, int reportCounter){
     printf("Rata-rata Learning Points: %0.2f\n", averageLearningPoints);
     printf("\nPemahaman Subaru tentang Elsa: %s\n", learningPointsCategory(averageLearningPoints));
     
+    // print every deathdata recorded from battles
     printf("Detail Setiap Loop:\n");
     for(int i = 0; i < reportCounter; i++){
         deathData(i, reports[i]);
@@ -231,14 +239,16 @@ int main() {
 
     int deathCount = 1;
     while(deathCount<=10 && !winningState){
-    deathLoop(&deathCount, &currentLearningPoints, &winningState, reports, &reportCounter);
-    deathCount++;
+        deathLoop(&deathCount, &currentLearningPoints, &winningState, reports, &reportCounter);
+        deathCount++;
     }
 
     if(winningState){
-    printf("\nSUBARU BERHASIL MENGALAHKAN ELSA!\n");
+        printf("\nSUBARU BERHASIL MENGALAHKAN ELSA!\n");
+
     }else{
-    printf("\nSUBARU TIDAK BERHASIL MENGALAHKAN ELSA!\n");
+        printf("\nSUBARU TIDAK BERHASIL MENGALAHKAN ELSA!\n");
+
     }
 
     analysis(reports, reportCounter);
