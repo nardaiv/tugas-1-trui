@@ -78,8 +78,16 @@ void battle(
 
     }else{
         //error handling
-        printf("\nERROR : INVALID INPUT");
-        //exit(1);
+        printf("\nInput tidak Valid! Harap coba lagi!\n");
+        battle(
+            currentLearningPoints, damageDealt, damageSurvived, reset, winningState, turnCount,
+            
+            //User 
+            userHP, attackMultiplier,  
+            
+            //Elsa
+            elsaHP, damageMultiplier
+        );
     }
 
 }
