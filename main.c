@@ -155,5 +155,11 @@ int main() {
     deathCount++;
   }
 
+  if(winningState){
+    printf("\nSUBARU BERHASIL MENGALAHKAN ELSA!\n");
+  }else{
+    printf("\nSUBARU TIDAK BERHASIL MENGALAHKAN ELSA!\n");
+  }
+
   return 0;
 }
