@@ -145,6 +145,20 @@ float average(struct LoopReport reports[], int choice, int lenght){
     return (float) sum / lenght;
 }
 
+char* attackCategory(float attackAvg){
+    if (attackAvg >= 100){
+        return "Fatal";
+    }else if (attackAvg >= 50){
+        return "Dalam";
+    }else if (attackAvg >= 25){
+        return "Normal";
+    }else if (attackAvg >= 10){
+        return "Ringan";
+    }else {
+        return "Terblokir";
+    }
+}
+
 char* learningPointsCategory(float learningPoint){
     if (learningPoint >= 85){
         return "SEMPURNA (Memahami semua pola serangan)";
@@ -164,9 +178,9 @@ void deathData(int index,struct LoopReport report){
     printf("Damage ke Elsa: %d \n", report.damageDealt);
     printf("Damage Diterima: %d \n", report.damageSurvived);
     printf("Bertahan selama: %d turn\n", report.turnCount);
-    printf("Penyebab Kematian: Sayatan Normal\n");
+    float attackAvg = (float)report.damageSurvived / report.turnCount;
+    printf("Penyebab Kematian: Sayatan %s\n", attackCategory(attackAvg) );
     printf("Learning Points: %d\n", report.learningPoints);
-
 
 }
 
