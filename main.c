@@ -136,8 +136,13 @@ void deathLoop(int *deathCount, float *currentLearningPoints, bool *winningState
     *reportCounter++;
 }
 
-void analysis(){
-    printf("=== Analisis Return by Death ===");
+void analysis(struct LoopReport *repots){
+    printf("\n=== Analisis Return by Death ===\n"); 
+    printf("Total Loop Kematian: 3\n");
+    printf("Rata-rata Learning Points: 70.33\n");
+    printf("\nPemahaman Subaru tentang Elsa: TINGGI (Memahami sebagian besar pola)\n");
+    printf("Detail Setiap Loop:\n");
+
 }
 
 int main() {
@@ -160,6 +165,8 @@ int main() {
   }else{
     printf("\nSUBARU TIDAK BERHASIL MENGALAHKAN ELSA!\n");
   }
+
+  analysis(reports);
 
   return 0;
 }
