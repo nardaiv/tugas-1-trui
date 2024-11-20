@@ -41,8 +41,19 @@ void attack(int *userHP, float attackMultiplier, int *elsaHp, float damageMultip
 
 }
 
-void dodge(){
+void dodge(int *userHP, float currentLearningPoints, int *elsaHp, float damageMultiplier, int *damageDealt, int *damageSurvived,int turnCount){
+    // elsa attacks user
+    int elsaDamage = (int)((BASE_ELSA_DAMAGE + (turnCount * 5)) * damageMultiplier);
+    printf("Elsa menyerang! Damage: %d (x%0.2f multiplier)\n", elsaDamage, damageMultiplier);
 
+    // user dodge
+    int dodge = elsaDamage * 0.5 + abs(currentLearningPoints - elsaDamage)*0.4;
+    printf("Subaru berhasil menghindari serangan! Pengurangan Damage : %d \n", dodge);
+
+    // final taken damage
+    int finalDamage = elsaDamage - dodge;
+    *userHP -= finalDamage;
+    printf("Damage akhir yang diterima subaru : %d \n", finalDamage );    
 }
 
 void retreat(bool *reset){
@@ -73,7 +84,7 @@ void battle(
         attack(userHP, attackMultiplier, elsaHP, damageMultiplier, damageDealt, damageSurvived, winningState, reset, turnCount);
 
     }else if(choice =='D'){
-        dodge();
+        dodge(userHP, *currentLearningPoints, elsaHP, damageMultiplier, damageDealt, damageSurvived, turnCount);
 
     }else if(choice=='R'){
         retreat(reset);
