@@ -88,7 +88,6 @@ int calculateLearningPoint(int damageDealt,int turnSurvived,int damageSurvived )
     float damageScore = damageDealt * 100 / ELSA_BASE_HP;
     float surivalScore = turnSurvived * 100 / MAX_TURNS ;
     float healtScore = (1.0f - ((float)damageSurvived / (MAX_HP * turnSurvived))) * 100;
-    //printf("%f %f %f \n",damageScore, surivalScore, healtScore);
     
     return (int)(0.4*damageScore + 0.3*surivalScore + 0.3*healtScore);;
 }
@@ -123,7 +122,6 @@ void deathLoop(int *deathCount, float *currentLearningPoints, bool *winningState
         turnCount++;
     }
 
-    //printf("%d %d %d \n",damageDealt, turnCount, damageSurvived);
     // calculate learning point received from last battle
     int learningPoint = calculateLearningPoint(damageDealt, turnCount, damageSurvived);
     
@@ -132,7 +130,6 @@ void deathLoop(int *deathCount, float *currentLearningPoints, bool *winningState
 
     struct LoopReport newReport = {damageSurvived, damageDealt, turnCount, (int)learningPoint};
     reports[*reportCounter] = newReport;
-    //printf("%d %d %d %d", newReport.damageSurvived, newReport.damageDealt, newReport.turnCount, newReport.learningPoints);
     *reportCounter+= 1;
 }
 
@@ -178,8 +175,10 @@ void deathData(int index,struct LoopReport report){
     printf("Damage ke Elsa: %d \n", report.damageDealt);
     printf("Damage Diterima: %d \n", report.damageSurvived);
     printf("Bertahan selama: %d turn\n", report.turnCount);
+
     float attackAvg = (float)report.damageSurvived / report.turnCount;
     printf("Penyebab Kematian: Sayatan %s\n", attackCategory(attackAvg) );
+    
     printf("Learning Points: %d\n", report.learningPoints);
 
 }
@@ -188,9 +187,11 @@ void analysis(struct LoopReport *reports, int reportCounter){
     printf("\n=== Analisis Return by Death ===\n"); 
 
     printf("Total Loop Kematian: %d\n", reportCounter);
+
     float averageLearningPoints = average(reports, 1, reportCounter);
     printf("Rata-rata Learning Points: %0.2f\n", averageLearningPoints);
     printf("\nPemahaman Subaru tentang Elsa: %s\n", learningPointsCategory(averageLearningPoints));
+    
     printf("Detail Setiap Loop:\n");
     for(int i = 0; i < reportCounter; i++){
         deathData(i, reports[i]);
@@ -218,7 +219,6 @@ int main() {
     }else{
     printf("\nSUBARU TIDAK BERHASIL MENGALAHKAN ELSA!\n");
     }
-
 
     analysis(reports, reportCounter);
 
